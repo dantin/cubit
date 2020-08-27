@@ -17,3 +17,9 @@
 *.log
 *.pid
 .cert/
+
+coverage.txt
+cubit
+
+data/*.yml
+!data/sample.yml
