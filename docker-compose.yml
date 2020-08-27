@@ -1,0 +1,19 @@
+version: '3.5'
+services:
+  mysql:
+    image: "mysql:${MYSQL_TAG}"
+    restart: always
+    volumes:
+      - mysql_database:/var/lib/mysql
+      - "${CODE_PATH}/data/mysql-entrypoint:/docker-entrypoint-initdb.d"
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_USER=mysql
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=secret
+      - TZ=Asia/Shanghai
+
+volumes:
+  mysql_database:
+    external: true

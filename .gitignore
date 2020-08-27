@@ -13,3 +13,13 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+*.log
+*.pid
+.cert/
+
+coverage.txt
+cubit
+
+data/*.yml
+!data/sample.yml
