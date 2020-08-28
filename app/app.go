@@ -28,7 +28,6 @@ import (
 	"github.com/dantin/cubit/storage"
 	"github.com/dantin/cubit/version"
 	"github.com/google/uuid"
-	"github.com/pkg/errors"
 )
 
 const (
@@ -86,9 +85,6 @@ func New(output io.Writer, args []string) *Application {
 
 // Run runs Jabber/XMPP application until either a stop signal is received or an error occurs.
 func (a *Application) Run() error {
-	if len(a.args) == 0 {
-		return errors.New("empty command-line arguments")
-	}
 	var configFile string
 	var showVersion, showUsage bool
 

@@ -8,7 +8,6 @@ require (
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/google/uuid v1.1.1
 	github.com/pborman/uuid v1.2.0
-	github.com/pkg/errors v0.9.1
 	github.com/sony/gobreaker v0.4.1
 	github.com/stretchr/testify v1.6.1
 	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550

@@ -172,9 +172,10 @@ func New(level string, output io.Writer, files ...io.WriteCloser) (Logger, error
 		level:  lvl,
 		output: output,
 		files:  files,
+		recCh:  make(chan record, logChanBufferSize),
 	}
-	l.recCh = make(chan record, logChanBufferSize)
 	go l.loop()
+
 	return l, nil
 }
 
@@ -220,8 +221,8 @@ func (l *logger) loop() {
 			l.b.Reset()
 
 			l.b.WriteString(time.Now().Format("2006-01-02 15:04:05"))
-			l.b.WriteString(" ")
-			l.b.WriteString(logLevelGlyph(rec.level))
+			//l.b.WriteString(" ")
+			//l.b.WriteString(logLevelGlyph(rec.level))
 			l.b.WriteString(" [")
 			l.b.WriteString(logLevelAbbreviation(rec.level))
 			l.b.WriteString("] ")
@@ -289,15 +290,15 @@ func logLevelAbbreviation(level Level) string {
 func logLevelGlyph(level Level) string {
 	switch level {
 	case DebugLevel:
-		return "\U0001f50D"
+		return "\u2699\ufe0f"
 	case InfoLevel:
 		return "\u2139\ufe0f"
 	case WarningLevel:
 		return "\u26a0\ufe0f"
 	case ErrorLevel:
-		return "\U0001f4a5"
+		return "\u2639\ufe0f"
 	case FatalLevel:
-		return "\U0001f480"
+		return "\u2620\ufe0f"
 	default:
 		return ""
 	}

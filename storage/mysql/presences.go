@@ -140,7 +140,6 @@ func (s *mySQLPresences) DeleteAllocationPresences(ctx context.Context, allocati
 func (s *mySQLPresences) ClearPresences(ctx context.Context) error {
 	_, err := sq.Delete("presences").RunWith(s.db).ExecContext(ctx)
 	return err
-
 }
 
 func (s *mySQLPresences) UpsertCapabilities(ctx context.Context, caps *capsmodel.Capabilities) error {
