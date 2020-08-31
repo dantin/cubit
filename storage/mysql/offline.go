@@ -24,7 +24,7 @@ func newOffline(db *sql.DB) *mySQLOffline {
 
 func (s *mySQLOffline) InsertOfflineMessage(ctx context.Context, message *xmpp.Message, username string) error {
 	q := sq.Insert("offline_messages").
-		Columns("username", "data", "create_at").
+		Columns("username", "data", "created_at").
 		Values(username, message.String(), nowExpr)
 	_, err := q.RunWith(s.db).ExecContext(ctx)
 	return err
@@ -34,7 +34,7 @@ func (s *mySQLOffline) CountOfflineMessages(ctx context.Context, username string
 	q := sq.Select("COUNT(*)").
 		From("offline_messages").
 		Where(sq.Eq{"username": username}).
-		OrderBy("create_at")
+		OrderBy("created_at")
 
 	var count int
 	err := q.RunWith(s.db).QueryRowContext(ctx).Scan(&count)
@@ -50,7 +50,7 @@ func (s *mySQLOffline) FetchOfflineMessages(ctx context.Context, username string
 	q := sq.Select("data").
 		From("offline_messages").
 		Where(sq.Eq{"username": username}).
-		OrderBy("create_at")
+		OrderBy("created_at")
 
 	rows, err := q.RunWith(s.db).QueryContext(ctx)
 	if err != nil {

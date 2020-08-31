@@ -172,9 +172,10 @@ func New(level string, output io.Writer, files ...io.WriteCloser) (Logger, error
 		level:  lvl,
 		output: output,
 		files:  files,
+		recCh:  make(chan record, logChanBufferSize),
 	}
-	l.recCh = make(chan record, logChanBufferSize)
 	go l.loop()
+
 	return l, nil
 }
 
@@ -289,7 +290,7 @@ func logLevelAbbreviation(level Level) string {
 func logLevelGlyph(level Level) string {
 	switch level {
 	case DebugLevel:
-		return "\U0001f50D"
+		return "\U0001f50d"
 	case InfoLevel:
 		return "\u2139\ufe0f"
 	case WarningLevel:

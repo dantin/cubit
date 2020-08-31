@@ -21,7 +21,7 @@ func newBlockList(db *sql.DB) *mySQLBlockList {
 func (s *mySQLBlockList) InsertBlockListItem(ctx context.Context, item *model.BlockListItem) error {
 	_, err := sq.Insert("blocklist_items").
 		Options("IGNORE").
-		Columns("username", "jid", "create_at").
+		Columns("username", "jid", "created_at").
 		Values(item.Username, item.JID, nowExpr).
 		RunWith(s.db).ExecContext(ctx)
 	return err
@@ -36,7 +36,7 @@ func (s *mySQLBlockList) FetchBlockListItems(ctx context.Context, username strin
 	q := sq.Select("username", "jid").
 		From("blocklist_items").
 		Where(sq.Eq{"username": username}).
-		OrderBy("create_at")
+		OrderBy("created_at")
 
 	rows, err := q.RunWith(s.db).QueryContext(ctx)
 	if err != nil {

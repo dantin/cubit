@@ -58,7 +58,7 @@ func TestDebugLog(t *testing.T) {
 	l := bw.String()
 
 	require.True(t, strings.Contains(l, "[DBG]"))
-	require.True(t, strings.Contains(l, "\U0001f50D"))
+	require.True(t, strings.Contains(l, "\U0001f50d"))
 	require.True(t, strings.Contains(l, "test debug log!"))
 }
 
