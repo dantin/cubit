@@ -58,6 +58,7 @@ func TestDebugLog(t *testing.T) {
 	l := bw.String()
 
 	require.True(t, strings.Contains(l, "[DBG]"))
+	require.True(t, strings.Contains(l, "\U0001f50d"))
 	require.True(t, strings.Contains(l, "test debug log!"))
 }
 
@@ -71,6 +72,7 @@ func TestInfoLog(t *testing.T) {
 	l := bw.String()
 
 	require.True(t, strings.Contains(l, "[INF]"))
+	require.True(t, strings.Contains(l, "\u2139\ufe0f"))
 	require.True(t, strings.Contains(l, "test info log!"))
 }
 
@@ -84,6 +86,7 @@ func TestWarningLog(t *testing.T) {
 	l := bw.String()
 
 	require.True(t, strings.Contains(l, "[WRN]"))
+	require.True(t, strings.Contains(l, "\u26a0\ufe0f"))
 	require.True(t, strings.Contains(l, "test warning log!"))
 }
 
@@ -97,6 +100,7 @@ func TestErrorLog(t *testing.T) {
 	l := bw.String()
 
 	require.True(t, strings.Contains(l, "[ERR]"))
+	require.True(t, strings.Contains(l, "\U0001f4a5"))
 	require.True(t, strings.Contains(l, "test error log!"))
 
 	bw.Reset()
@@ -124,6 +128,7 @@ func TestFatalLog(t *testing.T) {
 
 	l := bw.String()
 	require.True(t, strings.Contains(l, "[FTL]"))
+	require.True(t, strings.Contains(l, "\U0001f480"))
 	require.True(t, strings.Contains(l, "test fatal log!"))
 
 	bw.Reset()

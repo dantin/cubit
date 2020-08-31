@@ -221,8 +221,8 @@ func (l *logger) loop() {
 			l.b.Reset()
 
 			l.b.WriteString(time.Now().Format("2006-01-02 15:04:05"))
-			//l.b.WriteString(" ")
-			//l.b.WriteString(logLevelGlyph(rec.level))
+			l.b.WriteString(" ")
+			l.b.WriteString(logLevelGlyph(rec.level))
 			l.b.WriteString(" [")
 			l.b.WriteString(logLevelAbbreviation(rec.level))
 			l.b.WriteString("] ")
@@ -290,15 +290,15 @@ func logLevelAbbreviation(level Level) string {
 func logLevelGlyph(level Level) string {
 	switch level {
 	case DebugLevel:
-		return "\u2699\ufe0f"
+		return "\U0001f50d"
 	case InfoLevel:
 		return "\u2139\ufe0f"
 	case WarningLevel:
 		return "\u26a0\ufe0f"
 	case ErrorLevel:
-		return "\u2639\ufe0f"
+		return "\U0001f4a5"
 	case FatalLevel:
-		return "\u2620\ufe0f"
+		return "\U0001f480"
 	default:
 		return ""
 	}

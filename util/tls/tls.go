@@ -41,6 +41,7 @@ func LoadCertificate(keyFile, certFile, domain string) (tls.Certificate, error) 
 			return tls.Certificate{}, fmt.Errorf("must specify a private key and a server certificate for the domain '%s'", domain)
 		}
 	}
+
 	cer, err := tls.LoadX509KeyPair(certFile, keyFile)
 	if err != nil {
 		return tls.Certificate{}, err

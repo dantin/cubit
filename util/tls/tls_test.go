@@ -11,7 +11,7 @@ func TestLoadCertificate(t *testing.T) {
 	t.Run("Valid", func(t *testing.T) {
 		//defer os.RemoveAll(".cert/")
 
-		tlsCfg, err := LoadCertificate("../../data/cert/test.server.key", "../../data/cert/test.server.crt", "localhost")
+		tlsCfg, err := LoadCertificate("../../data/cert/server.key", "../../data/cert/server.crt", "localhost")
 
 		require.Nil(t, err)
 		require.NotNil(t, tlsCfg)
