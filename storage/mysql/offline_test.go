@@ -8,7 +8,7 @@ import (
 	"github.com/dantin/cubit/util/pool"
 	"github.com/dantin/cubit/xmpp"
 	"github.com/dantin/cubit/xmpp/jid"
-	"github.com/pborman/uuid"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
@@ -23,7 +23,7 @@ func newOfflineMock() (*mySQLOffline, sqlmock.Sqlmock) {
 func TestMySQLStorage_InsertOfflineMessages(t *testing.T) {
 	j, _ := jid.NewWithString("demo@example.org/desktop", false)
 	message := xmpp.NewElementName("message")
-	message.SetID(uuid.New())
+	message.SetID(uuid.New().String())
 	message.AppendElement(xmpp.NewElementName("body"))
 	m, _ := xmpp.NewMessageFromElement(message, j, j)
 	messageXML := m.String()

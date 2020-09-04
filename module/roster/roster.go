@@ -16,7 +16,7 @@ import (
 	"github.com/dantin/cubit/util/runqueue"
 	"github.com/dantin/cubit/xmpp"
 	"github.com/dantin/cubit/xmpp/jid"
-	"github.com/pborman/uuid"
+	"github.com/google/uuid"
 )
 
 const rosterNamespace = "jabber:iq:roster"
@@ -134,7 +134,7 @@ func (x *Roster) sendRoster(ctx context.Context, iq *xmpp.IQ, query xmpp.XElemen
 		stm.SendElement(ctx, res)
 		for _, itm := range items {
 			if itm.Ver > v {
-				iq := xmpp.NewIQType(uuid.New(), xmpp.SetType)
+				iq := xmpp.NewIQType(uuid.New().String(), xmpp.SetType)
 				q := xmpp.NewElementNamespace("query", rosterNamespace)
 				q.SetAttribute("ver", fmt.Sprintf("v%d", itm.Ver))
 				q.AppendElement(itm.Element())
@@ -713,7 +713,7 @@ func (x *Roster) pushItem(ctx context.Context, ri *rostermodel.Item, to *jid.JID
 		if !requested {
 			continue
 		}
-		pushEl := xmpp.NewIQType(uuid.New(), xmpp.SetType)
+		pushEl := xmpp.NewIQType(uuid.New().String(), xmpp.SetType)
 		pushEl.SetTo(stm.JID().String())
 		pushEl.AppendElement(query)
 		stm.SendElement(ctx, pushEl)

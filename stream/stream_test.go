@@ -6,14 +6,14 @@ import (
 
 	"github.com/dantin/cubit/xmpp"
 	"github.com/dantin/cubit/xmpp/jid"
-	"github.com/pborman/uuid"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
 func TestMockC2Stream(t *testing.T) {
 	j1, _ := jid.NewWithString("alice@example.org/desktop", false)
 	j2, _ := jid.NewWithString("bob@example.org/desktop", false)
-	id := uuid.New()
+	id := uuid.New().String()
 
 	stm := NewMockC2S(id, j1)
 

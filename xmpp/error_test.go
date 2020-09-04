@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/dantin/cubit/xmpp/jid"
-	"github.com/pborman/uuid"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
@@ -32,7 +32,7 @@ func TestError(t *testing.T) {
 	require.Equal(t, unexpectedRequestErrorReason, ErrUnexpectedRequest.Error())
 
 	j, _ := jid.New("", "example.org", "", true)
-	e := NewIQType(uuid.New(), GetType)
+	e := NewIQType(uuid.New().String(), GetType)
 	e.SetFromJID(j)
 	e.SetToJID(j)
 

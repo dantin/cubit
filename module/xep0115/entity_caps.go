@@ -13,7 +13,7 @@ import (
 	"github.com/dantin/cubit/util/runqueue"
 	"github.com/dantin/cubit/xmpp"
 	"github.com/dantin/cubit/xmpp/jid"
-	"github.com/pborman/uuid"
+	"github.com/google/uuid"
 )
 
 const (
@@ -118,7 +118,7 @@ func (x *EntityCaps) processIQ(ctx context.Context, iq *xmpp.IQ) {
 func (x *EntityCaps) requestCapabilities(ctx context.Context, node, ver string, userJID *jid.JID) {
 	srvJID, _ := jid.NewWithString(x.router.Hosts().DefaultHostName(), true)
 
-	iqID := uuid.New()
+	iqID := uuid.New().String()
 	x.mu.Lock()
 	x.activeDiscoInfo[iqID] = true
 	x.mu.Unlock()

@@ -14,7 +14,7 @@ const (
 	defaultDialTimeout        = time.Duration(15) * time.Second
 	defaultConnectTimeout     = time.Duration(5) * time.Second
 	defaultTimeout            = time.Duration(20) * time.Second
-	defaultMaxStanzaSize      = 131072
+	defaultMaxStanzaSize      = 128 * 1024
 )
 
 // TransportConfig represents s2s transport configuration.

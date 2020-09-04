@@ -5,7 +5,7 @@ import (
 
 	"github.com/dantin/cubit/xmpp"
 	"github.com/dantin/cubit/xmpp/jid"
-	"github.com/pborman/uuid"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
@@ -23,7 +23,7 @@ func TestIQBuild(t *testing.T) {
 	require.NotNil(t, err)
 
 	// no type
-	elem.SetID(uuid.New())
+	elem.SetID(uuid.New().String())
 	_, err = xmpp.NewIQFromElement(elem, j, j)
 	require.NotNil(t, err)
 
@@ -52,15 +52,15 @@ func TestIQBuild(t *testing.T) {
 }
 
 func TestIQType(t *testing.T) {
-	require.True(t, xmpp.NewIQType(uuid.New(), xmpp.GetType).IsGet())
-	require.True(t, xmpp.NewIQType(uuid.New(), xmpp.SetType).IsSet())
-	require.True(t, xmpp.NewIQType(uuid.New(), xmpp.ResultType).IsResult())
+	require.True(t, xmpp.NewIQType(uuid.New().String(), xmpp.GetType).IsGet())
+	require.True(t, xmpp.NewIQType(uuid.New().String(), xmpp.SetType).IsSet())
+	require.True(t, xmpp.NewIQType(uuid.New().String(), xmpp.ResultType).IsResult())
 }
 
 func TestResultIQ(t *testing.T) {
 	j, _ := jid.New("", "example.org", "", true)
 
-	id := uuid.New()
+	id := uuid.New().String()
 	iq := xmpp.NewIQType(id, xmpp.GetType)
 	iq.SetFromJID(j)
 	iq.SetToJID(j)
@@ -73,7 +73,7 @@ func TestResultIQ(t *testing.T) {
 func TestIQJID(t *testing.T) {
 	from, _ := jid.New("username", "test.org", "desktop", false)
 	to, _ := jid.New("username", "example.org", "desktop", false)
-	iq := xmpp.NewIQType(uuid.New(), xmpp.GetType)
+	iq := xmpp.NewIQType(uuid.New().String(), xmpp.GetType)
 	iq.SetFromJID(from)
 	require.Equal(t, iq.FromJID().String(), iq.From())
 	iq.SetToJID(to)

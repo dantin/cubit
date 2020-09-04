@@ -6,14 +6,14 @@ import (
 
 	"github.com/dantin/cubit/xmpp"
 	"github.com/dantin/cubit/xmpp/jid"
-	"github.com/pborman/uuid"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
 func TestMemoryStorage_InsertOfflineMessage(t *testing.T) {
 	j, _ := jid.NewWithString("alice@example.org/desktop", false)
 	message := xmpp.NewElementName("message")
-	message.SetID(uuid.New())
+	message.SetID(uuid.New().String())
 	message.AppendElement(xmpp.NewElementName("body"))
 	m, _ := xmpp.NewMessageFromElement(message, j, j)
 
@@ -28,7 +28,7 @@ func TestMemoryStorage_InsertOfflineMessage(t *testing.T) {
 func TestMemoryStorage_CountOfflineMessages(t *testing.T) {
 	j, _ := jid.NewWithString("alice@example.org/desktop", false)
 	message := xmpp.NewElementName("message")
-	message.SetID(uuid.New())
+	message.SetID(uuid.New().String())
 	message.AppendElement(xmpp.NewElementName("body"))
 	m, _ := xmpp.NewMessageFromElement(message, j, j)
 
@@ -48,7 +48,7 @@ func TestMemoryStorage_CountOfflineMessages(t *testing.T) {
 func TestMemoryStorage_FetchOfflineMessages(t *testing.T) {
 	j, _ := jid.NewWithString("alice@example.org/desktop", false)
 	message := xmpp.NewElementName("message")
-	message.SetID(uuid.New())
+	message.SetID(uuid.New().String())
 	message.AppendElement(xmpp.NewElementName("body"))
 	m, _ := xmpp.NewMessageFromElement(message, j, j)
 
@@ -67,7 +67,7 @@ func TestMemoryStorage_FetchOfflineMessages(t *testing.T) {
 func TestMemoryStorage_DeleteOfflineMessages(t *testing.T) {
 	j, _ := jid.NewWithString("alice@example.org/desktop", false)
 	message := xmpp.NewElementName("message")
-	message.SetID(uuid.New())
+	message.SetID(uuid.New().String())
 	message.AppendElement(xmpp.NewElementName("body"))
 	m, _ := xmpp.NewMessageFromElement(message, j, j)
 
