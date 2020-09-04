@@ -17,7 +17,7 @@ import (
 	"github.com/dantin/cubit/transport/compress"
 	"github.com/dantin/cubit/xmpp"
 	"github.com/dantin/cubit/xmpp/jid"
-	"github.com/pborman/uuid"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
@@ -55,7 +55,7 @@ func TestSession_Open(t *testing.T) {
 
 	// test client socket session start
 	tr := newFakeTransport(transport.Socket)
-	sess := New(uuid.New(), &Config{JID: j}, tr, hosts)
+	sess := New(uuid.New().String(), &Config{JID: j}, tr, hosts)
 
 	require.NotNil(t, sess.Close(context.Background()))
 	_, err1 := sess.Receive()
@@ -73,7 +73,7 @@ func TestSession_Open(t *testing.T) {
 
 	// test server socket session start
 	tr.wrBuf.Reset()
-	sess = New(uuid.New(), &Config{JID: j, IsServer: true}, tr, hosts)
+	sess = New(uuid.New().String(), &Config{JID: j, IsServer: true}, tr, hosts)
 
 	_ = sess.Open(context.Background(), nil)
 	pr = xmpp.NewParser(tr.wrBuf, xmpp.SocketStream, 0)
@@ -85,7 +85,7 @@ func TestSession_Open(t *testing.T) {
 
 	// test unsupported transport type
 	tr = newFakeTransport(transport.Type(11))
-	sess = New(uuid.New(), &Config{JID: j}, tr, hosts)
+	sess = New(uuid.New().String(), &Config{JID: j}, tr, hosts)
 	require.Nil(t, sess.Open(context.Background(), nil))
 	require.NotNil(t, sess.Open(context.Background(), nil)) // open twice
 }
@@ -95,7 +95,7 @@ func TestSession_Close(t *testing.T) {
 	j, _ := jid.NewWithString("example.org", true)
 	tr := newFakeTransport(transport.Socket)
 
-	sess := New(uuid.New(), &Config{JID: j}, tr, hosts)
+	sess := New(uuid.New().String(), &Config{JID: j}, tr, hosts)
 
 	_ = sess.Open(context.Background(), nil)
 	tr.wrBuf.Reset()
@@ -107,7 +107,7 @@ func TestSession_Send(t *testing.T) {
 	hosts := setupTest("example.org")
 	j, _ := jid.NewWithString("alice@example.org/desktop", true)
 	tr := newFakeTransport(transport.Socket)
-	sess := New(uuid.New(), &Config{JID: j}, tr, hosts)
+	sess := New(uuid.New().String(), &Config{JID: j}, tr, hosts)
 
 	elem := xmpp.NewElementNamespace("open", "urn:ietf:params:xml:ns:xmpp-framing")
 
@@ -121,14 +121,14 @@ func TestSession_Receive(t *testing.T) {
 	hosts := setupTest("example.org")
 	j, _ := jid.NewWithString("alice@example.org/desktop", true)
 	tr := newFakeTransport(transport.Socket)
-	sess := New(uuid.New(), &Config{JID: j}, tr, hosts)
+	sess := New(uuid.New().String(), &Config{JID: j}, tr, hosts)
 
 	_ = sess.Open(context.Background(), nil)
 	_, err := sess.Receive()
 	require.Equal(t, &Error{}, err)
 
 	tr = newFakeTransport(transport.Socket)
-	sess = New(uuid.New(), &Config{JID: j}, tr, hosts)
+	sess = New(uuid.New().String(), &Config{JID: j}, tr, hosts)
 
 	open := xmpp.NewElementNamespace("stream:stream", "")
 	_ = open.ToXML(tr.rdBuf, false)
@@ -136,7 +136,7 @@ func TestSession_Receive(t *testing.T) {
 	require.Equal(t, &Error{UnderlyingErr: streamerror.ErrInvalidNamespace}, err)
 
 	tr = newFakeTransport(transport.Socket)
-	sess = New(uuid.New(), &Config{JID: j}, tr, hosts)
+	sess = New(uuid.New().String(), &Config{JID: j}, tr, hosts)
 
 	_ = sess.Open(context.Background(), nil)
 	open.SetNamespace(jabberClientNamespace)
@@ -144,7 +144,7 @@ func TestSession_Receive(t *testing.T) {
 	open.SetVersion("1.0")
 	_ = open.ToXML(tr.rdBuf, false)
 
-	iq := xmpp.NewIQType(uuid.New(), xmpp.ResultType)
+	iq := xmpp.NewIQType(uuid.New().String(), xmpp.ResultType)
 	_ = iq.ToXML(tr.rdBuf, true)
 
 	_, err = sess.Receive()   // read open stream element
@@ -155,7 +155,7 @@ func TestSession_Receive(t *testing.T) {
 
 	//
 	tr = newFakeTransport(transport.Socket)
-	sess = New(uuid.New(), &Config{JID: j}, tr, hosts)
+	sess = New(uuid.New().String(), &Config{JID: j}, tr, hosts)
 
 	_ = sess.Open(context.Background(), nil)
 	_ = open.ToXML(tr.rdBuf, false)
@@ -178,7 +178,7 @@ func TestSession_IsValidNamespace(t *testing.T) {
 	j, _ := jid.NewWithString("example.org", true)
 
 	tr := newFakeTransport(transport.Socket)
-	sess := New(uuid.New(), &Config{JID: j}, tr, hosts)
+	sess := New(uuid.New().String(), &Config{JID: j}, tr, hosts)
 
 	_ = sess.Open(context.Background(), nil)
 
@@ -186,7 +186,7 @@ func TestSession_IsValidNamespace(t *testing.T) {
 	require.Equal(t, &Error{UnderlyingErr: streamerror.ErrInvalidNamespace}, sess.validateNamespace(iqServer))
 
 	tr = newFakeTransport(transport.Socket)
-	sess = New(uuid.New(), &Config{JID: j, IsServer: true}, tr, hosts)
+	sess = New(uuid.New().String(), &Config{JID: j, IsServer: true}, tr, hosts)
 
 	_ = sess.Open(context.Background(), nil)
 
@@ -201,7 +201,7 @@ func TestSession_IsValidFrom(t *testing.T) {
 	j2, _ := jid.NewWithString("alice@example.org/desktop", true) // client full jid
 
 	tr := newFakeTransport(transport.Socket)
-	sess := New(uuid.New(), &Config{JID: j2}, tr, hosts)
+	sess := New(uuid.New().String(), &Config{JID: j2}, tr, hosts)
 
 	_ = sess.Open(context.Background(), nil)
 	sess.SetJID(j1)
@@ -221,7 +221,7 @@ func TestSession_ValidateStream(t *testing.T) {
 	elem3 := xmpp.NewElementNamespace("open", "")
 
 	tr := newFakeTransport(transport.Socket)
-	sess := New(uuid.New(), &Config{JID: j}, tr, hosts)
+	sess := New(uuid.New().String(), &Config{JID: j}, tr, hosts)
 	err := sess.validateStreamElement(elem1)
 
 	_ = sess.Open(context.Background(), nil)
@@ -267,7 +267,7 @@ func TestSession_ExtractAddresses(t *testing.T) {
 	iq.SetTo("bob@example.org")
 
 	tr := newFakeTransport(transport.Socket)
-	sess := New(uuid.New(), &Config{JID: j1}, tr, hosts)
+	sess := New(uuid.New().String(), &Config{JID: j1}, tr, hosts)
 
 	_ = sess.Open(context.Background(), nil)
 	from, to, err := sess.extractAddresses(iq)
@@ -309,7 +309,7 @@ func TestSession_BuildStanza(t *testing.T) {
 	j, _ := jid.NewWithString("alice@example.org/desktop", true)
 
 	tr := newFakeTransport(transport.Socket)
-	sess := New(uuid.New(), &Config{JID: j}, tr, hosts)
+	sess := New(uuid.New().String(), &Config{JID: j}, tr, hosts)
 
 	_ = sess.Open(context.Background(), nil)
 
@@ -340,7 +340,7 @@ func TestSession_BuildStanza(t *testing.T) {
 	require.NotNil(t, err)
 	require.Equal(t, xmpp.ErrBadRequest, err.UnderlyingErr)
 
-	elem.SetID(uuid.New())
+	elem.SetID(uuid.New().String())
 	elem.SetType("result")
 
 	_, err = sess.buildStanza(elem)
@@ -380,7 +380,7 @@ func TestSession_MapError(t *testing.T) {
 	j, _ := jid.NewWithString("alice@example.org/desktop", true)
 
 	tr := newFakeTransport(transport.Socket)
-	sess := New(uuid.New(), &Config{JID: j}, tr, hosts)
+	sess := New(uuid.New().String(), &Config{JID: j}, tr, hosts)
 
 	err := errors.New("err")
 

@@ -14,7 +14,7 @@ import (
 	"github.com/dantin/cubit/util/runqueue"
 	"github.com/dantin/cubit/xmpp"
 	"github.com/dantin/cubit/xmpp/jid"
-	"github.com/pborman/uuid"
+	"github.com/google/uuid"
 )
 
 const blockingCommandNamespace = "urn:xmpp:blocking"
@@ -204,7 +204,7 @@ func (x *BlockingCommand) pushIQ(ctx context.Context, elem xmpp.XElement, stm st
 		if !requested {
 			continue
 		}
-		iq := xmpp.NewIQType(uuid.New(), xmpp.SetType)
+		iq := xmpp.NewIQType(uuid.New().String(), xmpp.SetType)
 		iq.AppendElement(elem)
 		stm.SendElement(ctx, iq)
 	}

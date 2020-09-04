@@ -14,7 +14,7 @@ import (
 	"github.com/dantin/cubit/util/runqueue"
 	"github.com/dantin/cubit/xmpp"
 	"github.com/dantin/cubit/xmpp/jid"
-	"github.com/pborman/uuid"
+	"github.com/google/uuid"
 )
 
 const pingNamespace = "urn:xmpp:ping"
@@ -174,7 +174,7 @@ func (x *Ping) cancelPing(stm stream.C2S) {
 
 func (x *Ping) schedulePingTimer(stm stream.C2S) {
 	pi := &ping{
-		identifier: uuid.New(),
+		identifier: uuid.New().String(),
 		stm:        stm,
 	}
 	pi.timer = time.AfterFunc(x.cfg.SendInterval, func() {

@@ -16,7 +16,7 @@ import (
 	"github.com/dantin/cubit/transport"
 	"github.com/dantin/cubit/xmpp"
 	"github.com/dantin/cubit/xmpp/jid"
-	"github.com/pborman/uuid"
+	"github.com/google/uuid"
 )
 
 const (
@@ -93,7 +93,7 @@ func New(id string, config *Config, tr transport.Transport, hosts *host.Hosts) *
 		sJID:         config.JID,
 	}
 	if !s.isInitiating {
-		s.streamID = uuid.New()
+		s.streamID = uuid.New().String()
 	}
 	return s
 }

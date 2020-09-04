@@ -44,7 +44,6 @@ var logoStr = []string{
 	`  / __| | | | | | '_ \  | | | __|`,
 	` | (__  | |_| | | |_) | | | | |_ `,
 	`  \___|  \__,_| |_.__/  |_|  \__|`,
-	`                                 `,
 }
 
 const usageStr = `
@@ -226,7 +225,7 @@ func (a *Application) createPIDFile(pidFile string) error {
 	defer func() { _ = file.Close() }()
 
 	currentPid := os.Getpid()
-	if _, err := file.WriteString(strconv.FormatInt(int64(currentPid), 10)); err != nil {
+	if _, err := file.WriteString(strconv.Itoa(currentPid)); err != nil {
 		return err
 	}
 	return nil
