@@ -100,7 +100,7 @@ func New(id string, config *Config, tr transport.Transport, hosts *host.Hosts) *
 
 // StreamID returns session stream identifier.
 func (s *Session) StreamID() string {
-	s.mu.RLocker()
+	s.mu.RLock()
 	defer s.mu.RUnlock()
 	return s.streamID
 }

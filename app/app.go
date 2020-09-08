@@ -177,7 +177,6 @@ func (a *Application) Run() error {
 	// start serving s2s...
 	if err := a.setRLimit(); err != nil {
 		return err
-
 	}
 	if cfg.S2S != nil {
 		a.s2s = s2s.New(cfg.S2S, a.mods, a.s2sOutProvider, a.router)
@@ -188,7 +187,6 @@ func (a *Application) Run() error {
 	a.c2s, err = c2s.New(cfg.C2S, a.mods, a.comps, a.router, repContainer.User(), repContainer.BlockList())
 	if err != nil {
 		return err
-
 	}
 	a.c2s.Start()
 

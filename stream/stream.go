@@ -13,13 +13,13 @@ type InStream interface {
 	Disconnect(ctx context.Context, err error)
 }
 
-// InOutStream represents a generic incoming/outgoing stream.
+// InOutStream represents a generic bi-direction stream.
 type InOutStream interface {
 	InStream
 	SendElement(ctx context.Context, elem xmpp.XElement)
 }
 
-// C2S represents a client-to-server XMPP stream.
+// C2S represents a client-to-server bi-direction XMPP stream.
 type C2S interface {
 	InOutStream
 
@@ -40,12 +40,12 @@ type C2S interface {
 	Presence() *xmpp.Presence
 }
 
-// S2SIn represents an incoming server-to-server XMPP stream.
+// S2SIn represents an incoming server-to-server one-direction XMPP stream.
 type S2SIn interface {
 	InStream
 }
 
-// S2SOut represents an outgoing server-to-server XMPP stream.
+// S2SOut represents an outgoing server-to-server one-dirction XMPP stream.
 type S2SOut interface {
 	InOutStream
 }

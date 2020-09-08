@@ -6,6 +6,9 @@ SOURCE_DIR := $(shell pwd)
 GOFILES!=find . -name '*.go'
 GOLDFLAGS := -s -w -extldflags $(LDFLAGS)
 
+.PHONY: build
+build: cubit
+
 .PHONY: test
 test:
 	@echo "Running tests..."
