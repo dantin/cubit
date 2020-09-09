@@ -1,4 +1,4 @@
-package s2s
+package c2s
 
 import (
 	"context"
@@ -6,34 +6,46 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dantin/cubit/router"
+	"github.com/dantin/cubit/component"
+	"github.com/dantin/cubit/module"
+	"github.com/dantin/cubit/stream"
+	"github.com/dantin/cubit/transport"
 	"github.com/stretchr/testify/require"
 )
 
-func TestS2S_SocketServer(t *testing.T) {
-	h := setupTestHosts(testDomain)
-	r, _ := router.New(h, nil, nil)
+func TestC2SSocketServer(t *testing.T) {
+	r, _, _ := setupTest("localhost")
 
 	errCh := make(chan error)
 	cfg := Config{
-		ConnectTimeout: time.Second * time.Duration(5),
-		KeepAlive:      time.Duration(600) * time.Second,
-		MaxStanzaSize:  8192,
+		ID:               "srv-123",
+		ConnectTimeout:   time.Second * time.Duration(5),
+		MaxStanzaSize:    8192,
+		ResourceConflict: Reject,
 		Transport: TransportConfig{
-			Port: 12778,
+			Type: transport.Socket,
+			Port: 9998,
 		},
 	}
-	srv := newServer(&cfg, nil, nil, r)
+	srv := server{
+		cfg:           &cfg,
+		router:        r,
+		mods:          &module.Modules{},
+		comps:         &component.Components{},
+		inConnections: make(map[string]stream.C2S),
+	}
 	go srv.start()
+
 	go func() {
 		time.Sleep(time.Millisecond * 150)
 
 		// test XMPP port...
-		conn, err := net.Dial("tcp", "127.0.0.1:12778")
+		conn, err := net.Dial("tcp", "127.0.0.1:9998")
 		if err != nil {
 			errCh <- err
 			return
 		}
+
 		xmlHdr := []byte(`<?xml version="1.0" encoding="UTF-8">`)
 		_, err = conn.Write(xmlHdr)
 		if err != nil {
@@ -47,7 +59,6 @@ func TestS2S_SocketServer(t *testing.T) {
 		defer cancel()
 
 		_ = srv.shutdown(ctx)
-
 		errCh <- nil
 	}()
 	err := <-errCh

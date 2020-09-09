@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestOutStream_Disconnect(t *testing.T) {
+func TestS2SOutStream_Disconnect(t *testing.T) {
 	h := setupTestHosts(testDomain)
 
 	cfg, dialer, conn := tUtilOutStreamDefaultConfig()
@@ -26,7 +26,7 @@ func TestOutStream_Disconnect(t *testing.T) {
 	require.Equal(t, outDisconnected, stm.getState())
 }
 
-func TestOutStream_BadConnect(t *testing.T) {
+func TestS2SOutStream_BadConnect(t *testing.T) {
 	h := setupTestHosts(testDomain)
 
 	_, conn := tUtilOutStreamInit(t, h)
@@ -38,7 +38,7 @@ func TestOutStream_BadConnect(t *testing.T) {
 	require.True(t, conn.waitClose())
 }
 
-func TestOutStream_Features(t *testing.T) {
+func TestS2SOutStream_Features(t *testing.T) {
 	h := setupTestHosts(testDomain)
 
 	_, conn := tUtilOutStreamInit(t, h)
@@ -77,7 +77,7 @@ func TestOutStream_Features(t *testing.T) {
 	require.True(t, conn.waitClose())
 }
 
-func TestOutStream_StartTLS(t *testing.T) {
+func TestS2SOutStream_StartTLS(t *testing.T) {
 	h := setupTestHosts(testDomain)
 
 	// unsupported stanza...
@@ -112,7 +112,7 @@ func TestOutStream_StartTLS(t *testing.T) {
 	require.True(t, stm.isSecured())
 }
 
-func TestOutStream_Authenticate(t *testing.T) {
+func TestS2SOutStream_Authenticate(t *testing.T) {
 	h := setupTestHosts(testDomain)
 
 	// unsupported stanza...
@@ -171,7 +171,7 @@ func TestOutStream_Authenticate(t *testing.T) {
 	require.Equal(t, iqID, elem.ID())
 }
 
-func TestOutStream_Dialback(t *testing.T) {
+func TestS2SOutStream_Dialback(t *testing.T) {
 	h := setupTestHosts(testDomain)
 
 	// unsupported stanza...
