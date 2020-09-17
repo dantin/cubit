@@ -56,7 +56,7 @@ func TestApp_PrintVersion(t *testing.T) {
 
 func TestApplication_Run(t *testing.T) {
 	w := newWriterBuffer()
-	args := []string{"./cubit", "--config=../data/bsic.yml"}
+	args := []string{"./cubit", "--config=../data/basic.yml"}
 	ap := New(w, args)
 	go func() {
 		time.Sleep(time.Millisecond * 1500) // wait until initialized
