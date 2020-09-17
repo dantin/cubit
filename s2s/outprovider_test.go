@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestOutProvider_GetOut(t *testing.T) {
+func TestS2SOutProvider_GetOut(t *testing.T) {
 	hosts := setupTestHosts(testDomain)
 
 	op := NewOutProvider(&Config{}, hosts)
@@ -29,7 +29,7 @@ func TestOutProvider_GetOut(t *testing.T) {
 	op.mu.RUnlock()
 }
 
-func TestOutProvider_Shutdown(t *testing.T) {
+func TestS2SOutProvider_Shutdown(t *testing.T) {
 	hosts := setupTestHosts(testDomain)
 
 	op := NewOutProvider(&Config{}, hosts)

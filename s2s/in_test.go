@@ -20,7 +20,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestInStream_ConnectTimeout(t *testing.T) {
+func TestS2SInStream_ConnectTimeout(t *testing.T) {
 	r, h := setupTestRouter(testDomain)
 
 	op := NewOutProvider(&Config{KeepAlive: time.Second}, h)
@@ -30,7 +30,7 @@ func TestInStream_ConnectTimeout(t *testing.T) {
 	require.Equal(t, inDisconnected, stm.getState())
 }
 
-func TestInStream_Disconnect(t *testing.T) {
+func TestS2SInStream_Disconnect(t *testing.T) {
 	r, h := setupTestRouter(testDomain)
 
 	op := NewOutProvider(&Config{}, h)
@@ -42,7 +42,7 @@ func TestInStream_Disconnect(t *testing.T) {
 	require.Equal(t, inDisconnected, stm.getState())
 }
 
-func TestInStream_Features(t *testing.T) {
+func TestS2SInStream_Features(t *testing.T) {
 	r, h := setupTestRouter(testDomain)
 
 	op := NewOutProvider(&Config{KeepAlive: time.Second}, h)
@@ -87,7 +87,7 @@ func TestInStream_Features(t *testing.T) {
 	require.Equal(t, inConnected, stm.getState())
 }
 
-func TestInStream_TLS(t *testing.T) {
+func TestS2SInStream_TLS(t *testing.T) {
 	r, h := setupTestRouter(testDomain)
 
 	op := NewOutProvider(&Config{KeepAlive: time.Second}, h)
@@ -125,7 +125,7 @@ func TestInStream_TLS(t *testing.T) {
 	require.True(t, stm.isSecured())
 }
 
-func TestInStream_Authenticate(t *testing.T) {
+func TestS2SInStream_Authenticate(t *testing.T) {
 	r, h := setupTestRouter(testDomain)
 
 	op := NewOutProvider(&Config{KeepAlive: time.Second}, h)
@@ -177,7 +177,7 @@ func TestInStream_Authenticate(t *testing.T) {
 	require.Equal(t, saslNamespace, elem.Namespace())
 }
 
-func TestInStream_DialbackVerify(t *testing.T) {
+func TestS2SInStream_DialbackVerify(t *testing.T) {
 	r, h := setupTestRouter(testDomain)
 
 	op := NewOutProvider(&Config{KeepAlive: time.Second}, h)
@@ -212,7 +212,7 @@ func TestInStream_DialbackVerify(t *testing.T) {
 	require.Equal(t, "valid", elem.Type())
 }
 
-func TestInStream_DialbackAuthorize(t *testing.T) {
+func TestS2SInStream_DialbackAuthorize(t *testing.T) {
 	r, h := setupTestRouter(testDomain)
 
 	op := NewOutProvider(&Config{KeepAlive: time.Second}, h)
@@ -311,7 +311,7 @@ func TestInStream_DialbackAuthorize(t *testing.T) {
 	require.Equal(t, "valid", elem.Type())
 }
 
-func TestInStream_SendElement(t *testing.T) {
+func TestS2SInStream_SendElement(t *testing.T) {
 	r, h := setupTestRouter(testDomain)
 
 	op := NewOutProvider(&Config{KeepAlive: time.Second}, h)
