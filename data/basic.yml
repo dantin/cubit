@@ -1,0 +1,16 @@
+pid_path: ut.cubit.pid
+
+debug:
+  port: 16060
+
+logger:
+  level: debug
+  log_path: ut.cubit.log
+
+storage:
+  type: memory
+
+c2s:
+  - id: default
+    transport:
+      port: 15222

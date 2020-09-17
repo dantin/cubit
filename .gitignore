@@ -24,3 +24,4 @@ cubit
 
 data/*.yml
 !data/sample.yml
+!data/basic.yml
