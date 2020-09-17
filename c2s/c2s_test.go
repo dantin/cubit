@@ -11,7 +11,6 @@ import (
 	"time"
 
 	c2srouter "github.com/dantin/cubit/c2s/router"
-	"github.com/dantin/cubit/component"
 	"github.com/dantin/cubit/module"
 	"github.com/dantin/cubit/router"
 	"github.com/dantin/cubit/router/host"
@@ -205,7 +204,7 @@ func TestC2S_StartAndShutdown(t *testing.T) {
 
 func setupTestC2S(domain string) (*C2S, *fakeC2SServer) {
 	srv := newFakeC2SServer()
-	createC2SServer = func(_ *Config, _ *module.Modules, _ *component.Components, _ router.Router, _ repository.User, _ repository.BlockList) c2sServer {
+	createC2SServer = func(_ *Config, _ *module.Modules, _ router.Router, _ repository.User, _ repository.BlockList) c2sServer {
 		return srv
 	}
 
@@ -219,6 +218,6 @@ func setupTestC2S(domain string) (*C2S, *fakeC2SServer) {
 		nil,
 	)
 
-	c2s, _ := New([]Config{{}}, &module.Modules{}, &component.Components{}, r, userRep, blockListRep)
+	c2s, _ := New([]Config{{}}, &module.Modules{}, r, userRep, blockListRep)
 	return c2s, srv
 }

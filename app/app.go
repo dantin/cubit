@@ -18,7 +18,6 @@ import (
 
 	"github.com/dantin/cubit/c2s"
 	c2srouter "github.com/dantin/cubit/c2s/router"
-	"github.com/dantin/cubit/component"
 	"github.com/dantin/cubit/log"
 	"github.com/dantin/cubit/module"
 	"github.com/dantin/cubit/router"
@@ -63,7 +62,6 @@ type Application struct {
 	logger           log.Logger
 	router           router.Router
 	mods             *module.Modules
-	comps            *component.Components
 	s2sOutProvider   *s2s.OutProvider
 	s2s              *s2s.S2S
 	c2s              *c2s.C2S
@@ -172,7 +170,6 @@ func (a *Application) Run() error {
 
 	// initialize modules & components...
 	a.mods = module.New(&cfg.Modules, a.router, repContainer, allocID)
-	a.comps = component.New(&cfg.Components, a.mods.DiscoInfo)
 
 	// start serving s2s...
 	if err := a.setRLimit(); err != nil {
@@ -184,7 +181,7 @@ func (a *Application) Run() error {
 
 	}
 	// start serving c2s...
-	a.c2s, err = c2s.New(cfg.C2S, a.mods, a.comps, a.router, repContainer.User(), repContainer.BlockList())
+	a.c2s, err = c2s.New(cfg.C2S, a.mods, a.router, repContainer.User(), repContainer.BlockList())
 	if err != nil {
 		return err
 	}
@@ -327,9 +324,6 @@ func (a *Application) doShutdown(ctx context.Context) error {
 	}
 	a.c2s.Shutdown(ctx)
 
-	if err := a.comps.Shutdown(ctx); err != nil {
-		return err
-	}
 	if err := a.mods.Shutdown(ctx); err != nil {
 		return err
 	}

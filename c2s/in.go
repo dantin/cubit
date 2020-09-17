@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/dantin/cubit/auth"
-	"github.com/dantin/cubit/component"
 	streamerror "github.com/dantin/cubit/errors"
 	"github.com/dantin/cubit/log"
 	"github.com/dantin/cubit/module"
@@ -39,7 +38,6 @@ type inStream struct {
 	userRep        repository.User
 	blockListRep   repository.BlockList
 	mods           *module.Modules
-	comps          *component.Components
 	sess           *session.Session
 	tr             transport.Transport
 	mu             sync.RWMutex
@@ -60,7 +58,7 @@ type inStream struct {
 	ctxCancelFn    context.CancelFunc
 }
 
-func newStream(id string, config *streamConfig, tr transport.Transport, mods *module.Modules, comps *component.Components, router router.Router, userRep repository.User, blockListRep repository.BlockList) stream.C2S {
+func newStream(id string, config *streamConfig, tr transport.Transport, mods *module.Modules, router router.Router, userRep repository.User, blockListRep repository.BlockList) stream.C2S {
 	ctx, ctxCancelFn := context.WithCancel(context.Background())
 	s := &inStream{
 		cfg:          config,
@@ -69,7 +67,6 @@ func newStream(id string, config *streamConfig, tr transport.Transport, mods *mo
 		userRep:      userRep,
 		blockListRep: blockListRep,
 		mods:         mods,
-		comps:        comps,
 		id:           id,
 		runQueue:     runqueue.New(id),
 		ctx:          ctx,
@@ -425,18 +422,6 @@ func (s *inStream) handleBound(ctx context.Context, elem xmpp.XElement) {
 			}
 			return
 		}
-	}
-	if comp := s.comps.Get(stanza.ToJID().Domain()); comp != nil { // component stanza?
-		switch stanza := stanza.(type) {
-		case *xmpp.IQ:
-			if di := s.mods.DiscoInfo; di != nil && di.MatchesIQ(stanza) {
-				di.ProcessIQ(ctx, stanza)
-				return
-			}
-			break
-		}
-		comp.ProcessStanza(ctx, stanza, s)
-		return
 	}
 	s.processStanza(ctx, stanza)
 }

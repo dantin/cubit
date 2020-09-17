@@ -6,7 +6,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dantin/cubit/component"
 	"github.com/dantin/cubit/module"
 	"github.com/dantin/cubit/stream"
 	"github.com/dantin/cubit/transport"
@@ -31,7 +30,6 @@ func TestC2SSocketServer(t *testing.T) {
 		cfg:           &cfg,
 		router:        r,
 		mods:          &module.Modules{},
-		comps:         &component.Components{},
 		inConnections: make(map[string]stream.C2S),
 	}
 	go srv.start()

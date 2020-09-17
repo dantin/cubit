@@ -5,7 +5,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dantin/cubit/component"
 	"github.com/dantin/cubit/model"
 	"github.com/dantin/cubit/module"
 	"github.com/dantin/cubit/router"
@@ -405,7 +404,6 @@ func tUtilStreamInit(r router.Router, userRep repository.User, blockListRep repo
 		tUtilInStreamDefaultConfig(),
 		tr,
 		tUtilInitModules(r),
-		&component.Components{},
 		r,
 		userRep,
 		blockListRep)
