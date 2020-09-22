@@ -6,7 +6,6 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/dantin/cubit/component"
 	"github.com/dantin/cubit/log"
 	"github.com/dantin/cubit/module"
 	"github.com/dantin/cubit/router"
@@ -38,14 +37,14 @@ type C2S struct {
 }
 
 // New returns a new instance of a c2s connection manager.
-func New(configs []Config, mods *module.Modules, comps *component.Components, router router.Router, userRep repository.User, blockListRep repository.BlockList) (*C2S, error) {
+func New(configs []Config, mods *module.Modules, router router.Router, userRep repository.User, blockListRep repository.BlockList) (*C2S, error) {
 	if len(configs) == 0 {
 		return nil, errors.New("at least one c2s configuration is required")
 
 	}
 	c := &C2S{servers: make(map[string]c2sServer)}
 	for _, config := range configs {
-		srv := createC2SServer(&config, mods, comps, router, userRep, blockListRep)
+		srv := createC2SServer(&config, mods, router, userRep, blockListRep)
 		c.servers[config.ID] = srv
 	}
 	return c, nil

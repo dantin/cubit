@@ -5,6 +5,7 @@ import (
 
 	"github.com/dantin/cubit/module/offline"
 	"github.com/dantin/cubit/module/roster"
+	"github.com/dantin/cubit/module/ultrasound"
 	"github.com/dantin/cubit/module/xep0077"
 	"github.com/dantin/cubit/module/xep0092"
 	"github.com/dantin/cubit/module/xep0199"
@@ -15,18 +16,20 @@ type Config struct {
 	Enabled      map[string]struct{}
 	Roster       roster.Config
 	Offline      offline.Config
+	Ultrasound   ultrasound.Config
 	Registration xep0077.Config
 	Version      xep0092.Config
 	Ping         xep0199.Config
 }
 
 type configProxy struct {
-	Enabled      []string       `yaml:"enabled"`
-	Roster       roster.Config  `yaml:"mod_roster"`
-	Offline      offline.Config `yaml:"mod_offline"`
-	Registration xep0077.Config `yaml:"mod_registration"`
-	Version      xep0092.Config `yaml:"mod_version"`
-	Ping         xep0199.Config `yaml:"mod_ping"`
+	Enabled      []string          `yaml:"enabled"`
+	Roster       roster.Config     `yaml:"mod_roster"`
+	Offline      offline.Config    `yaml:"mod_offline"`
+	Ultrasound   ultrasound.Config `yaml:"mod_ultrasound"`
+	Registration xep0077.Config    `yaml:"mod_registration"`
+	Version      xep0092.Config    `yaml:"mod_version"`
+	Ping         xep0199.Config    `yaml:"mod_ping"`
 }
 
 // UnmarshalYAML satisfies Unmarshaler interface.
@@ -40,7 +43,7 @@ func (cfg *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	for _, mod := range p.Enabled {
 		switch mod {
 		case "roster", "last_activity", "private", "vcard", "registration", "pep", "version", "blocking_command",
-			"ping", "offline":
+			"ping", "offline", "ultrasound":
 			break
 		default:
 			return fmt.Errorf("module.Config: unrecognized module: %s", mod)
@@ -50,6 +53,7 @@ func (cfg *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	cfg.Enabled = enabled
 	cfg.Roster = p.Roster
 	cfg.Offline = p.Offline
+	cfg.Ultrasound = p.Ultrasound
 	cfg.Registration = p.Registration
 	cfg.Version = p.Version
 	cfg.Ping = p.Ping

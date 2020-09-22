@@ -9,7 +9,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/dantin/cubit/component"
 	streamerror "github.com/dantin/cubit/errors"
 	"github.com/dantin/cubit/log"
 	"github.com/dantin/cubit/module"
@@ -24,7 +23,6 @@ var listenerProvider = net.Listen
 type server struct {
 	cfg             *Config
 	mods            *module.Modules
-	comps           *component.Components
 	router          router.Router
 	userRep         repository.User
 	blockListRep    repository.BlockList
@@ -35,11 +33,10 @@ type server struct {
 	listening       uint32
 }
 
-func newC2SServer(config *Config, mods *module.Modules, comps *component.Components, router router.Router, userRep repository.User, blockListRep repository.BlockList) c2sServer {
+func newC2SServer(config *Config, mods *module.Modules, router router.Router, userRep repository.User, blockListRep repository.BlockList) c2sServer {
 	return &server{
 		cfg:           config,
 		mods:          mods,
-		comps:         comps,
 		router:        router,
 		userRep:       userRep,
 		blockListRep:  blockListRep,
@@ -112,7 +109,7 @@ func (s *server) startStream(tr transport.Transport, keepAlive time.Duration) {
 		compression:      s.cfg.Compression,
 		onDisconnect:     s.unregisterStream,
 	}
-	stm := newStream(s.nextID(), cfg, tr, s.mods, s.comps, s.router, s.userRep, s.blockListRep)
+	stm := newStream(s.nextID(), cfg, tr, s.mods, s.router, s.userRep, s.blockListRep)
 	s.registerStream(stm)
 }
 
