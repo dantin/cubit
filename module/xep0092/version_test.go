@@ -17,7 +17,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestXEP0092(t *testing.T) {
+func TestModule_XEP0092(t *testing.T) {
 	r := setupTest()
 
 	srvJID, _ := jid.New("", "example.org", "", true)

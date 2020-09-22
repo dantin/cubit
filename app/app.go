@@ -178,7 +178,6 @@ func (a *Application) Run() error {
 	if cfg.S2S != nil {
 		a.s2s = s2s.New(cfg.S2S, a.mods, a.s2sOutProvider, a.router)
 		a.s2s.Start()
-
 	}
 	// start serving c2s...
 	a.c2s, err = c2s.New(cfg.C2S, a.mods, a.router, repContainer.User(), repContainer.BlockList())

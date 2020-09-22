@@ -6,6 +6,7 @@ import (
 	"github.com/dantin/cubit/log"
 	"github.com/dantin/cubit/module/offline"
 	"github.com/dantin/cubit/module/roster"
+	"github.com/dantin/cubit/module/ultrasound"
 	"github.com/dantin/cubit/module/xep0012"
 	"github.com/dantin/cubit/module/xep0030"
 	"github.com/dantin/cubit/module/xep0049"
@@ -42,6 +43,7 @@ type IQHandler interface {
 type Modules struct {
 	Roster       *roster.Roster
 	Offline      *offline.Offline
+	Ultrasound   *ultrasound.Ultrasound
 	LastActivity *xep0012.LastActivity
 	Private      *xep0049.Private
 	DiscoInfo    *xep0030.DiscoInfo
@@ -101,6 +103,13 @@ func New(config *Config, router router.Router, reps repository.Container, alloca
 		m.Version = xep0092.New(&config.Version, m.DiscoInfo, router)
 		m.iqHandlers = append(m.iqHandlers, m.Version)
 		m.all = append(m.all, m.Version)
+	}
+
+	// XEP-ultrasound: customized protocol
+	if _, ok := config.Enabled["ultrasound"]; ok {
+		m.Ultrasound = ultrasound.New(&config.Ultrasound, m.DiscoInfo, router)
+		m.iqHandlers = append(m.iqHandlers, m.Ultrasound)
+		m.all = append(m.all, m.Ultrasound)
 	}
 
 	// XEP-0160: Offline message storage (https://xmpp.org/extensions/xep-0160.html)
