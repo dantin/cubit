@@ -110,7 +110,7 @@ func (u *mySQLUser) FetchUser(ctx context.Context, username string) (*model.User
 
 		err = sq.Select("name").
 			From("roles").
-			Where(sq.Expr("id = (SELECT id FROM user_role WHERE username = ?)", username)).
+			Where(sq.Expr("id = (SELECT role_id FROM user_role WHERE username = ?)", username)).
 			RunWith(u.db).QueryRowContext(ctx).Scan(&usr.Role)
 		if err != nil {
 			return nil, err

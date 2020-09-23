@@ -28,7 +28,7 @@ func TestModule_Ultrasound_MatchesIQ(t *testing.T) {
 	r.Bind(context.Background(), stm)
 
 	cfg := Config{}
-	x := New(&cfg, nil, r)
+	x := New(&cfg, nil, r, nil)
 	defer func() { _ = x.Shutdown() }()
 
 	// test MatchesIQ

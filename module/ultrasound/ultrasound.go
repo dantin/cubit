@@ -7,6 +7,7 @@ import (
 	"github.com/dantin/cubit/log"
 	"github.com/dantin/cubit/module/xep0030"
 	"github.com/dantin/cubit/router"
+	"github.com/dantin/cubit/storage/repository"
 	"github.com/dantin/cubit/util/runqueue"
 	"github.com/dantin/cubit/xmpp"
 )
@@ -23,14 +24,16 @@ type Ultrasound struct {
 	cfg      *Config
 	router   router.Router
 	runQueue *runqueue.RunQueue
+	userRep  repository.User
 }
 
 // New returns a ultrasound IQ handler module.
-func New(config *Config, disco *xep0030.DiscoInfo, router router.Router) *Ultrasound {
+func New(config *Config, disco *xep0030.DiscoInfo, router router.Router, userRep repository.User) *Ultrasound {
 	v := &Ultrasound{
 		cfg:      config,
 		router:   router,
 		runQueue: runqueue.New("ultrasound"),
+		userRep:  userRep,
 	}
 	if disco != nil {
 		disco.RegisterServerFeature(ultrasoundNamespace)
@@ -73,13 +76,29 @@ func (x *Ultrasound) processIQ(ctx context.Context, iq *xmpp.IQ) {
 }
 
 func (x *Ultrasound) sendProfile(ctx context.Context, iq *xmpp.IQ) {
+	userJID := iq.FromJID()
+	username := userJID.Node()
+
+	log.Debugf("fetch %s's profile", username)
+
+	user, err := x.userRep.FetchUser(ctx, username)
+	if err != nil {
+		log.Error(err)
+		_ = x.router.Route(ctx, iq.InternalServerError())
+		return
+	}
+
+	if len(user.Role) == 0 {
+		log.Errorf("empty role field for user %s", username)
+		_ = x.router.Route(ctx, iq.InternalServerError())
+		return
+	}
+
 	result := iq.ResultIQ()
 	query := xmpp.NewElementNamespace("query", ultrasoundNamespace)
 	profile := xmpp.NewElementName("profile")
-	log.Infof("echo profile")
 	query.AppendElement(profile)
-	// TODO: hard code user profile
-	profile.SetText("user")
+	profile.SetText(user.Role)
 	result.AppendElement(query)
 
 	_ = x.router.Route(ctx, result)
