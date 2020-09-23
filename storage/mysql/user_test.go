@@ -29,13 +29,22 @@ func TestMySQLStorage_InsertUser(t *testing.T) {
 	user := model.User{
 		Username:     "alice",
 		Password:     "passwd",
+		Role:         "user",
 		LastPresence: p,
 	}
 
 	s, mock := newUserMock()
+	mock.ExpectBegin()
+	mock.ExpectQuery("SELECT id FROM roles WHERE (.+)").
+		WithArgs("user").
+		WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
 	mock.ExpectExec("INSERT INTO users (.+) ON DUPLICATE KEY UPDATE (.+)").
 		WithArgs("alice", "passwd", p.String(), "passwd", p.String()).
 		WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectExec("INSERT INTO user_role (.+) VALUES (.+) ON DUPLICATE KEY UPDATE (.+)").
+		WithArgs("alice", 1, "alice").
+		WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectCommit()
 
 	err := s.UpsertUser(context.Background(), &user)
 
@@ -44,9 +53,11 @@ func TestMySQLStorage_InsertUser(t *testing.T) {
 
 	// err case
 	s, mock = newUserMock()
-	mock.ExpectExec("INSERT INTO users (.+) ON DUPLICATE KEY UPDATE (.+)").
-		WithArgs("alice", "passwd", p.String(), "passwd", p.String()).
+	mock.ExpectBegin()
+	mock.ExpectQuery("SELECT id FROM roles WHERE (.+)").
+		WithArgs("user").
 		WillReturnError(errMySQLStorage)
+	mock.ExpectRollback()
 
 	err = s.UpsertUser(context.Background(), &user)
 
@@ -70,6 +81,9 @@ func TestMySQLStorage_DeleteUser(t *testing.T) {
 		WithArgs("alice").
 		WillReturnResult(sqlmock.NewResult(0, 1))
 	mock.ExpectExec("DELETE FROM vcards (.+)").
+		WithArgs("alice").
+		WillReturnResult(sqlmock.NewResult(0, 1))
+	mock.ExpectExec("DELETE FROM user_role (.+)").
 		WithArgs("alice").
 		WillReturnResult(sqlmock.NewResult(0, 1))
 	mock.ExpectExec("DELETE FROM users (.+)").
@@ -108,6 +122,10 @@ func TestMySQLStorage_FetchUser(t *testing.T) {
 		WithArgs("alice").
 		WillReturnRows(sqlmock.NewRows(cols).
 			AddRow("alice", "passwd", p.String(), time.Now()))
+	mock.ExpectQuery("SELECT (.+) FROM user_role (.+)").
+		WithArgs("alice").
+		WillReturnRows(sqlmock.NewRows([]string{"name"}).
+			AddRow("user"))
 
 	usr, err := s.FetchUser(context.Background(), "alice")
 

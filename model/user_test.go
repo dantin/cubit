@@ -18,6 +18,7 @@ func TestModelUser(t *testing.T) {
 
 	user1.Username = "username"
 	user1.Password = "passwd"
+	user1.Role = "role"
 	user1.LastPresence = xmpp.NewPresence(j1, j2, xmpp.AvailableType)
 
 	buf := new(bytes.Buffer)
@@ -26,6 +27,7 @@ func TestModelUser(t *testing.T) {
 	require.Nil(t, user2.FromBytes(buf))
 	require.Equal(t, user1.Username, user2.Username)
 	require.Equal(t, user1.Password, user2.Password)
+	require.Equal(t, user1.Role, user2.Role)
 	require.Equal(t, user1.LastPresence.String(), user2.LastPresence.String())
 	require.NotEqual(t, time.Time{}, user2.LastPresenceAt)
 }

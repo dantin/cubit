@@ -12,6 +12,7 @@ import (
 type User struct {
 	Username       string
 	Password       string
+	Role           string
 	LastPresence   *xmpp.Presence
 	LastPresenceAt time.Time
 }
@@ -23,6 +24,9 @@ func (u *User) FromBytes(buf *bytes.Buffer) error {
 		return err
 	}
 	if err := dec.Decode(&u.Password); err != nil {
+		return err
+	}
+	if err := dec.Decode(&u.Role); err != nil {
 		return err
 	}
 	var hasPresence bool
@@ -49,6 +53,9 @@ func (u *User) ToBytes(buf *bytes.Buffer) error {
 		return err
 	}
 	if err := enc.Encode(&u.Password); err != nil {
+		return err
+	}
+	if err := enc.Encode(&u.Role); err != nil {
 		return err
 	}
 	hasPresence := u.LastPresence != nil

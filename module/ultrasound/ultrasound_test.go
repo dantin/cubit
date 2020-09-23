@@ -28,7 +28,7 @@ func TestModule_Ultrasound_MatchesIQ(t *testing.T) {
 	r.Bind(context.Background(), stm)
 
 	cfg := Config{}
-	x := New(&cfg, nil, r)
+	x := New(&cfg, nil, r, nil)
 	defer func() { _ = x.Shutdown() }()
 
 	// test MatchesIQ
@@ -38,7 +38,16 @@ func TestModule_Ultrasound_MatchesIQ(t *testing.T) {
 
 	query := xmpp.NewElementNamespace("query", ultrasoundNamespace)
 	iq.AppendElement(query)
+	require.False(t, x.MatchesIQ(iq))
 
+	iq.ClearElements()
+	query = xmpp.NewElementNamespace("profile", ultrasoundNamespace)
+	iq.AppendElement(query)
+	require.True(t, x.MatchesIQ(iq))
+
+	iq.ClearElements()
+	query = xmpp.NewElementNamespace("rooms", ultrasoundNamespace)
+	iq.AppendElement(query)
 	require.True(t, x.MatchesIQ(iq))
 }
 
