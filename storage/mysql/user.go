@@ -26,38 +26,60 @@ func newUser(db *sql.DB) *mySQLUser {
 }
 
 func (u *mySQLUser) UpsertUser(ctx context.Context, usr *model.User) error {
-	var presenceXML string
-	if usr.LastPresence != nil {
-		buf := u.pool.Get()
-		if err := usr.LastPresence.ToXML(buf, true); err != nil {
+	return u.inTransaction(ctx, func(tx *sql.Tx) error {
+		var err error
+		// fetch role id from roles.
+		var roleID int
+		err = sq.Select("id").
+			From("roles").
+			Where(sq.Eq{"name": "user"}).
+			RunWith(tx).
+			QueryRowContext(ctx).Scan(&roleID)
+		if err != nil {
 			return err
 		}
-		presenceXML = buf.String()
-		u.pool.Put(buf)
-	}
-	columns := []string{"username", "password", "updated_at", "created_at"}
-	values := []interface{}{usr.Username, usr.Password, nowExpr, nowExpr}
 
-	if len(presenceXML) > 0 {
-		columns = append(columns, []string{"last_presence", "last_presence_at"}...)
-		values = append(values, []interface{}{presenceXML, nowExpr}...)
-	}
-	var suffix string
-	var suffixArgs []interface{}
-	if len(presenceXML) > 0 {
-		suffix = "ON DUPLICATE KEY UPDATE password = ?, last_presence = ?, last_presence_at = NOW(), updated_at = NOW()"
-		suffixArgs = []interface{}{usr.Password, presenceXML}
-	} else {
-		suffix = "ON DUPLICATE KEY UPDATE password = ?, updated_at = NOW()"
-		suffixArgs = []interface{}{usr.Password}
-	}
-	q := sq.Insert("users").
-		Columns(columns...).
-		Values(values...).
-		Suffix(suffix, suffixArgs...)
+		// if not existing, insert new user
+		var presenceXML string
+		if usr.LastPresence != nil {
+			buf := u.pool.Get()
+			if err := usr.LastPresence.ToXML(buf, true); err != nil {
+				return err
+			}
+			presenceXML = buf.String()
+			u.pool.Put(buf)
+		}
+		columns := []string{"username", "password", "updated_at", "created_at"}
+		values := []interface{}{usr.Username, usr.Password, nowExpr, nowExpr}
 
-	_, err := q.RunWith(u.db).ExecContext(ctx)
-	return err
+		if len(presenceXML) > 0 {
+			columns = append(columns, []string{"last_presence", "last_presence_at"}...)
+			values = append(values, []interface{}{presenceXML, nowExpr}...)
+		}
+		var suffix string
+		var suffixArgs []interface{}
+		if len(presenceXML) > 0 {
+			suffix = "ON DUPLICATE KEY UPDATE password = ?, last_presence = ?, last_presence_at = NOW(), updated_at = NOW()"
+			suffixArgs = []interface{}{usr.Password, presenceXML}
+		} else {
+			suffix = "ON DUPLICATE KEY UPDATE password = ?, updated_at = NOW()"
+			suffixArgs = []interface{}{usr.Password}
+		}
+		_, err = sq.Insert("users").
+			Columns(columns...).
+			Values(values...).
+			Suffix(suffix, suffixArgs...).RunWith(tx).ExecContext(ctx)
+		if err != nil {
+			return err
+		}
+
+		// upsert user_role
+		_, err = sq.Insert("user_role").
+			Columns("username", "role_id").
+			Values(usr.Username, roleID).
+			Suffix("ON DUPLICATE KEY UPDATE username = ?", usr.Username).RunWith(tx).ExecContext(ctx)
+		return err
+	})
 }
 
 func (u *mySQLUser) FetchUser(ctx context.Context, username string) (*model.User, error) {
@@ -84,6 +106,14 @@ func (u *mySQLUser) FetchUser(ctx context.Context, username string) (*model.User
 			toJID, _ := jid.NewWithString(lastPresence.To(), true)
 			usr.LastPresence, _ = xmpp.NewPresenceFromElement(lastPresence, fromJID, toJID)
 			usr.LastPresenceAt = presenceAt
+		}
+
+		err = sq.Select("name").
+			From("roles").
+			Where(sq.Expr("id = (SELECT id FROM user_role WHERE username = ?)", username)).
+			RunWith(u.db).QueryRowContext(ctx).Scan(&usr.Role)
+		if err != nil {
+			return nil, err
 		}
 		return &usr, nil
 	case sql.ErrNoRows:
@@ -113,6 +143,10 @@ func (u *mySQLUser) DeleteUser(ctx context.Context, username string) error {
 			return err
 		}
 		_, err = sq.Delete("vcards").Where(sq.Eq{"username": username}).RunWith(tx).ExecContext(ctx)
+		if err != nil {
+			return err
+		}
+		_, err = sq.Delete("user_role").Where(sq.Eq{"username": username}).RunWith(tx).ExecContext(ctx)
 		if err != nil {
 			return err
 		}

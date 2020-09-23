@@ -40,7 +40,10 @@ func New(config *Config, disco *xep0030.DiscoInfo, router router.Router) *Ultras
 
 // MatchesIQ returns whether or not an IQ should be processed by the ultrasound module.
 func (x *Ultrasound) MatchesIQ(iq *xmpp.IQ) bool {
-	return iq.IsGet() && iq.Elements().ChildNamespace("query", ultrasoundNamespace) != nil && iq.ToJID().IsServer()
+	e := iq.Elements()
+	profile := e.ChildNamespace("profile", ultrasoundNamespace)
+	rooms := e.ChildNamespace("rooms", ultrasoundNamespace)
+	return (iq.IsGet() && (profile != nil || rooms != nil))
 }
 
 // ProcessIQ process a ultrasound IQ talking according action over the associated stream.
@@ -59,12 +62,27 @@ func (x *Ultrasound) Shutdown() error {
 }
 
 func (x *Ultrasound) processIQ(ctx context.Context, iq *xmpp.IQ) {
-	q := iq.Elements().ChildNamespace("query", ultrasoundNamespace)
-	if q == nil || q.Elements().Count() != 0 {
+	e := iq.Elements()
+	if profile := e.ChildNamespace("profile", ultrasoundNamespace); profile != nil {
+		x.sendProfile(ctx, iq)
+	} else if rooms := e.ChildNamespace("rooms", ultrasoundNamespace); rooms != nil {
+		x.sendVideoStream(ctx, iq)
+	} else {
 		_ = x.router.Route(ctx, iq.BadRequestError())
-		return
 	}
-	x.sendVideoStream(ctx, iq)
+}
+
+func (x *Ultrasound) sendProfile(ctx context.Context, iq *xmpp.IQ) {
+	result := iq.ResultIQ()
+	query := xmpp.NewElementNamespace("query", ultrasoundNamespace)
+	profile := xmpp.NewElementName("profile")
+	log.Infof("echo profile")
+	query.AppendElement(profile)
+	// TODO: hard code user profile
+	profile.SetText("user")
+	result.AppendElement(query)
+
+	_ = x.router.Route(ctx, result)
 }
 
 func (x *Ultrasound) sendVideoStream(ctx context.Context, iq *xmpp.IQ) {
