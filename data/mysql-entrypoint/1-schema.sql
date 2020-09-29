@@ -19,14 +19,14 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS roles (
     id    BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name  VARCHAR(256)
+    name  VARCHAR(256) NOT NULL
 ) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- user_role
 
 CREATE TABLE IF NOT EXISTS user_role (
     username   VARCHAR(256) PRIMARY KEY,
-    role_id    BIGINT
+    role_id    BIGINT NOT NULL
 ) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- presences
@@ -245,18 +245,17 @@ CREATE TABLE IF NOT EXISTS pubsub_items (
 CREATE TABLE IF NOT EXISTS rooms (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     username    VARCHAR(256) NOT NULL,
-    camera_in   VARCHAR(256) NOT NULL,
-    camera_out  VARCHAR(256) NOT NULL,
-    device_in   VARCHAR(256) NOT NULL,
-    device_out  VARCHAR(256) NOT NULL,
-    `type`      VARCHAR(32) NOT NULL,
-    created_at  DATETIME NOT NULL
+    name        VARCHAR(256) NOT NULL,
+    `type`      VARCHAR(32) NOT NULL,  -- [normal, qc]
+    created_at  DATETIME NOT NULL,
+    updated_at  DATETIME NOT NULL
 ) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS room_video_streams (
-    id       BIGINT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(256) NOT NULL,
-    out_url  VARCHAR(256) NOT NULL,
-    `type`   VARCHAR(32) NOT NULL,
-    room_id  BIGINT NOT NULL
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    input       VARCHAR(256) NOT NULL,  -- video input stream
+    broadcast   VARCHAR(256) NOT NULL,  -- video broadcast stream
+    routes      TEXT NOT NULL,          -- video stream redirect map in json
+    `type`      VARCHAR(32) NOT NULL,   -- [camera, device]
+    room_id     BIGINT NOT NULL
 ) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

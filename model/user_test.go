@@ -18,7 +18,7 @@ func TestModelUser(t *testing.T) {
 
 	user1.Username = "username"
 	user1.Password = "passwd"
-	user1.Role = "role"
+	user1.Role = Usr
 	user1.LastPresence = xmpp.NewPresence(j1, j2, xmpp.AvailableType)
 
 	buf := new(bytes.Buffer)
