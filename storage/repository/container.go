@@ -28,6 +28,9 @@ type Container interface {
 	// Offline method returns repository.Offline concrete implementation.
 	Offline() Offline
 
+	// Room method returns repository.Room concrete implementation.
+	Room() Room
+
 	// Close closes underlying storage resources, commonly shared across repositories.
 	Close(ctx context.Context) error
 

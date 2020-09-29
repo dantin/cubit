@@ -20,6 +20,7 @@ type mySQLContainer struct {
 	blockList *mySQLBlockList
 	pubSub    *mySQLPubSub
 	offline   *mySQLOffline
+	room      *mySQLRoom
 
 	h      *sql.DB
 	doneCh chan chan bool
@@ -58,6 +59,7 @@ func New(cfg *Config) (repository.Container, error) {
 	c.blockList = newBlockList(c.h)
 	c.pubSub = newPubSub(c.h)
 	c.offline = newOffline(c.h)
+	c.room = newRoom(c.h)
 
 	return c, nil
 }
@@ -70,6 +72,7 @@ func (c *mySQLContainer) Private() repository.Private     { return c.priv }
 func (c *mySQLContainer) BlockList() repository.BlockList { return c.blockList }
 func (c *mySQLContainer) PubSub() repository.PubSub       { return c.pubSub }
 func (c *mySQLContainer) Offline() repository.Offline     { return c.offline }
+func (c *mySQLContainer) Room() repository.Room           { return c.room }
 
 func (c *mySQLContainer) IsClusterCompatible() bool {
 	return true

@@ -8,11 +8,50 @@ import (
 	"github.com/dantin/cubit/xmpp"
 )
 
+// Role represents a user role type.
+type Role int
+
+const (
+	// Unknown represents a unknown role.
+	Unknown Role = iota
+	// Root represents a root role.
+	Root
+	// Admin represents a admin role.
+	Admin
+	// Usr represents a user role.
+	Usr
+)
+
+func (r Role) String() string {
+	switch r {
+	case Root:
+		return "root"
+	case Admin:
+		return "admin"
+	case Usr:
+		return "user"
+	}
+	return "unknown"
+}
+
+// ParseRoleString parses string to Role.
+func ParseRoleString(s string) Role {
+	switch s {
+	case "root":
+		return Root
+	case "admin":
+		return Admin
+	case "user":
+		return Usr
+	}
+	return Unknown
+}
+
 // User represents a user storage entity.
 type User struct {
 	Username       string
 	Password       string
-	Role           string
+	Role           Role
 	LastPresence   *xmpp.Presence
 	LastPresenceAt time.Time
 }

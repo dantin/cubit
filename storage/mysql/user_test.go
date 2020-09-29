@@ -29,7 +29,7 @@ func TestMySQLStorage_InsertUser(t *testing.T) {
 	user := model.User{
 		Username:     "alice",
 		Password:     "passwd",
-		Role:         "user",
+		Role:         model.Usr,
 		LastPresence: p,
 	}
 

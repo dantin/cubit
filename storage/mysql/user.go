@@ -32,7 +32,7 @@ func (u *mySQLUser) UpsertUser(ctx context.Context, usr *model.User) error {
 		var roleID int
 		err = sq.Select("id").
 			From("roles").
-			Where(sq.Eq{"name": "user"}).
+			Where(sq.Eq{"name": model.Usr.String()}).
 			RunWith(tx).
 			QueryRowContext(ctx).Scan(&roleID)
 		if err != nil {
@@ -108,13 +108,15 @@ func (u *mySQLUser) FetchUser(ctx context.Context, username string) (*model.User
 			usr.LastPresenceAt = presenceAt
 		}
 
+		var role string
 		err = sq.Select("name").
 			From("roles").
 			Where(sq.Expr("id = (SELECT role_id FROM user_role WHERE username = ?)", username)).
-			RunWith(u.db).QueryRowContext(ctx).Scan(&usr.Role)
+			RunWith(u.db).QueryRowContext(ctx).Scan(&role)
 		if err != nil {
 			return nil, err
 		}
+		usr.Role = model.ParseRoleString(role)
 		return &usr, nil
 	case sql.ErrNoRows:
 		return nil, nil

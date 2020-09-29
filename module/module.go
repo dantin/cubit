@@ -107,7 +107,7 @@ func New(config *Config, router router.Router, reps repository.Container, alloca
 
 	// XEP-ultrasound: customized protocol
 	if _, ok := config.Enabled["ultrasound"]; ok {
-		m.Ultrasound = ultrasound.New(&config.Ultrasound, m.DiscoInfo, router, reps.User())
+		m.Ultrasound = ultrasound.New(&config.Ultrasound, m.DiscoInfo, router, reps.User(), reps.Room())
 		m.iqHandlers = append(m.iqHandlers, m.Ultrasound)
 		m.all = append(m.all, m.Ultrasound)
 	}

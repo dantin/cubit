@@ -15,6 +15,7 @@ type memoryContainer struct {
 	blockList *BlockList
 	pubSub    *PubSub
 	offline   *Offline
+	room      *Room
 }
 
 // New initializes in-memory storage and returns associated container.
@@ -29,6 +30,7 @@ func New() (repository.Container, error) {
 	c.blockList = NewBlockList()
 	c.pubSub = NewPubSub()
 	c.offline = NewOffline()
+	c.room = NewRoom()
 
 	return &c, nil
 }
@@ -41,6 +43,7 @@ func (c *memoryContainer) Private() repository.Private     { return c.priv }
 func (c *memoryContainer) BlockList() repository.BlockList { return c.blockList }
 func (c *memoryContainer) PubSub() repository.PubSub       { return c.pubSub }
 func (c *memoryContainer) Offline() repository.Offline     { return c.offline }
+func (c *memoryContainer) Room() repository.Room           { return c.room }
 
 func (c *memoryContainer) Close(_ context.Context) error { return nil }
 
