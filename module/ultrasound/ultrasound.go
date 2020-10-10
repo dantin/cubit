@@ -130,8 +130,14 @@ func (x *Ultrasound) sendRooms(ctx context.Context, iq *xmpp.IQ) {
 		return
 	}
 
+	req := iq.Elements().ChildNamespace("rooms", ultrasoundNamespace)
+	if req == nil {
+		log.Errorf("no rooms element.")
+		_ = x.router.Route(ctx, iq.InternalServerError())
+		return
+	}
 	var page, size int
-	pageValue := iq.Attributes().Get("page")
+	pageValue := req.Attributes().Get("page")
 	if len(pageValue) > 0 {
 		if page, err = strconv.Atoi(pageValue); err != nil {
 			page = 0
@@ -139,7 +145,7 @@ func (x *Ultrasound) sendRooms(ctx context.Context, iq *xmpp.IQ) {
 	} else {
 		page = 0
 	}
-	sizeValue := iq.Attributes().Get("page_size")
+	sizeValue := req.Attributes().Get("size")
 	if len(sizeValue) > 0 {
 		if size, err = strconv.Atoi(sizeValue); err != nil {
 			size = 4

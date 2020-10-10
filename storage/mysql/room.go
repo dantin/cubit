@@ -62,7 +62,7 @@ func (r *mySQLRoom) FetchRooms(ctx context.Context, page int, pageSize int) ([]r
 	q := sq.Select("id", "name", "username").
 		From("rooms").
 		Where(sq.Eq{"`type`": roomsmodel.Normal.String()}).
-		OrderBy("created_at ASC").
+		OrderBy("`id` ASC").
 		Limit(uint64(pageSize)).
 		Offset(uint64(page * pageSize))
 
@@ -108,8 +108,7 @@ func (r *mySQLRoom) FetchRooms(ctx context.Context, page int, pageSize int) ([]r
 func (r *mySQLRoom) CountRooms(ctx context.Context) (int, error) {
 	q := sq.Select("COUNT(*)").
 		From("rooms").
-		Where(sq.Eq{"`type`": roomsmodel.Normal.String()}).
-		OrderBy("created_at")
+		Where(sq.Eq{"`type`": roomsmodel.Normal.String()})
 
 	var count int
 	err := q.RunWith(r.db).QueryRowContext(ctx).Scan(&count)
