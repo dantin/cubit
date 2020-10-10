@@ -6,12 +6,12 @@ INSERT INTO roles (id, name) VALUES
 (2, 'user');
 
 INSERT INTO users (username, password, last_presence, last_presence_at, updated_at, created_at) VALUES
-('admin',  'password', '', NOW(), NOW(), NOW()),
-('room01', 'password', '', NOW(), NOW(), NOW()),
-('room02', 'password', '', NOW(), NOW(), NOW()),
-('room03', 'password', '', NOW(), NOW(), NOW()),
-('room04', 'password', '', NOW(), NOW(), NOW()),
-('room05', 'password', '', NOW(), NOW(), NOW());
+('admin',  'password', '', '2020-09-30 08:00:00+08:00', '2020-09-30 08:00:00+08:00', '2020-09-30 08:00:00+08:00'),
+('room01', 'password', '', '2020-09-30 08:00:00+08:00', '2020-09-30 08:00:00+08:00', '2020-09-30 08:00:00+08:00'),
+('room02', 'password', '', '2020-09-30 08:00:00+08:00', '2020-09-30 08:00:00+08:00', '2020-09-30 08:00:00+08:00'),
+('room03', 'password', '', '2020-09-30 08:00:00+08:00', '2020-09-30 08:00:00+08:00', '2020-09-30 08:00:00+08:00'),
+('room04', 'password', '', '2020-09-30 08:00:00+08:00', '2020-09-30 08:00:00+08:00', '2020-09-30 08:00:00+08:00'),
+('room05', 'password', '', '2020-09-30 08:00:00+08:00', '2020-09-30 08:00:00+08:00', '2020-09-30 08:00:00+08:00');
 
 INSERT INTO user_role (username, role_id) VALUES
 ('admin',  1),
@@ -22,12 +22,12 @@ INSERT INTO user_role (username, role_id) VALUES
 ('room05', 2);
 
 INSERT INTO rooms (id, username, name, `type`, created_at, updated_at) VALUES
-(1, 'admin',  'Room QC', 'qc',     NOW(), NOW()),
-(2, 'room01', 'Room 01', 'normal', NOW(), NOW()),
-(3, 'room02', 'Room 02', 'normal', NOW(), NOW()),
-(4, 'room03', 'Room 03', 'normal', NOW(), NOW()),
-(5, 'room04', 'Room 04', 'normal', NOW(), NOW()),
-(6, 'room05', 'Room 05', 'normal', NOW(), NOW());
+(1, 'admin',  'Room QC', 'qc',     '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+(2, 'room01', 'Room 01', 'normal', '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+(3, 'room02', 'Room 02', 'normal', '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+(4, 'room03', 'Room 03', 'normal', '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+(5, 'room04', 'Room 04', 'normal', '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+(6, 'room05', 'Room 05', 'normal', '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00');
 
 INSERT INTO room_video_streams (id, input, broadcast, routes, `type`, room_id) VALUES
 (1,  '', '', '{"room01": "srt://10.189.153.255:39991", "room02": "srt://10.189.153.255:39992", "room03": "srt://10.189.153.255:39993", "room04": "srt://10.189.153.255:39994", "room05": "srt://10.189.153.255:39995"}', 'camera', 1),
@@ -41,3 +41,36 @@ INSERT INTO room_video_streams (id, input, broadcast, routes, `type`, room_id) V
 (9,  '', '', '{"user": "srt://10.189.153.255:65118", "admin": "srt://10.189.153.255:65119"}', 'camera', 5),
 (10, '', '', '{"user": "srt://10.189.153.255:20021", "admin": "srt://10.189.153.255:30021"}', 'device', 6),
 (11, '', '', '{"user": "srt://10.189.153.255:20020", "admin": "srt://10.189.153.255:30020"}', 'camera', 6);
+
+INSERT INTO roster_versions (username, ver, updated_at, created_at) VALUES
+('admin',  1, '2020-10-09 00:00:00+08:00', '2020-10-09 00:00:00+08:00'),
+('room01', 1, '2020-10-09 00:00:00+08:00', '2020-10-09 00:00:00+08:00'),
+('room02', 1, '2020-10-09 00:00:00+08:00', '2020-10-09 00:00:00+08:00'),
+('room03', 1, '2020-10-09 00:00:00+08:00', '2020-10-09 00:00:00+08:00'),
+('room04', 1, '2020-10-09 00:00:00+08:00', '2020-10-09 00:00:00+08:00'),
+('room05', 1, '2020-10-09 00:00:00+08:00', '2020-10-09 00:00:00+08:00');
+
+INSERT INTO roster_items (username, jid, name, subscription, `groups`, ask, ver, created_at, updated_at) VALUES
+('admin',  'room01@localhost', 'room01', 'both', '["work"]', 1, 1, '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+('admin',  'room02@localhost', 'room02', 'both', '["work"]', 1, 1, '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+('admin',  'room03@localhost', 'room03', 'both', '["work"]', 1, 1, '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+('admin',  'room04@localhost', 'room04', 'both', '["work"]', 1, 1, '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+('admin',  'room05@localhost', 'room05', 'both', '["work"]', 1, 1, '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+('room01', 'admin@localhost',  'admin',  'both', '["work"]', 1, 1, '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+('room02', 'admin@localhost',  'admin',  'both', '["work"]', 1, 1, '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+('room03', 'admin@localhost',  'admin',  'both', '["work"]', 1, 1, '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+('room04', 'admin@localhost',  'admin',  'both', '["work"]', 1, 1, '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+('room05', 'admin@localhost',  'admin',  'both', '["work"]', 1, 1, '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00');
+
+INSERT INTO roster_groups (username, jid, `group`, created_at, updated_at) VALUES
+('admin',  'room01@localhost', 'work', '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+('admin',  'room02@localhost', 'work', '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+('admin',  'room03@localhost', 'work', '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+('admin',  'room04@localhost', 'work', '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+('admin',  'room05@localhost', 'work', '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+('room01', 'admin@localhost',  'work', '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+('room02', 'admin@localhost',  'work', '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+('room03', 'admin@localhost',  'work', '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+('room04', 'admin@localhost',  'work', '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00'),
+('room05', 'admin@localhost',  'work', '2020-09-30 09:00:00+08:00', '2020-09-30 09:00:00+08:00');
+
