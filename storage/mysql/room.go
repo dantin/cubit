@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"sort"
 	"strings"
 
 	sq "github.com/Masterminds/squirrel"
@@ -101,7 +102,22 @@ func (r *mySQLRoom) FetchRooms(ctx context.Context, page int, pageSize int) ([]r
 	for _, r := range rooms {
 		res = append(res, *r)
 	}
+	sort.Sort(byRoomID(res))
 	return res, nil
+}
+
+type byRoomID []roomsmodel.Room
+
+func (s byRoomID) Len() int {
+	return len(s)
+}
+
+func (s byRoomID) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+
+func (s byRoomID) Less(i, j int) bool {
+	return s[i].ID < s[j].ID
 }
 
 // CountRooms  returns current size of rooms.
