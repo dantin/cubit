@@ -287,7 +287,7 @@ func (a *Application) initDebugServer(port int) error {
 }
 
 func (a *Application) waitForStopSignal() os.Signal {
-	signal.Notify(a.waitStopCh, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM)
+	signal.Notify(a.waitStopCh, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 	return <-a.waitStopCh
 }
 
