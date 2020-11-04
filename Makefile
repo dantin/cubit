@@ -4,7 +4,6 @@ SHELL := /bin/bash
 SOURCE_DIR := $(shell pwd)
 
 GOFILES!=find . -name '*.go'
-GOLDFLAGS := -s -w -extldflags $(LDFLAGS)
 
 .PHONY: build
 build: cubit
@@ -39,10 +38,10 @@ go.sum: $(GOFILES) go.mod
 
 cubit: $(GOFILES) go.mod go.sum
 	@echo "Building binary..."
-	@go build \
-		-trimpath \
+	@CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
 		-o $@ \
-		-ldflags "$(GOLDFLAGS)"
+		-a \
+		-ldflags '-extldflags "-static"'
 
 .PHONY: init
 init:
@@ -61,3 +60,11 @@ env-up:
 .PHONY: env-down
 env-down:
 	@docker-compose -f docker-compose.yml down --remove-orphans
+
+.PHONY: standalone-up
+standalone-up:
+	@docker-compose -f standalone.yml up -d --force-recreate
+
+.PHONY: standalone-down
+standalone-down:
+	@docker-compose -f standalone.yml down --remove-orphans

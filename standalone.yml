@@ -1,0 +1,33 @@
+version: '3.5'
+services:
+  mysql:
+    image: "mysql:${MYSQL_TAG}"
+    restart: always
+    volumes:
+      - mysql_database:/var/lib/mysql
+      - "${CODE_PATH}/data/mysql-entrypoint:/docker-entrypoint-initdb.d"
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_USER=mysql
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=secret
+      - TZ=Asia/Shanghai
+  cubit:
+    image: "dantin/cubit:${CUBIT_TAG}"
+    restart: always
+    volumes:
+      - "${CODE_PATH}/data/prod.yml:/app/prod.yml"
+    ports:
+      - 5222:5222
+    command: >
+        sh -c "./wait-for mysql:3306 -t 1000 -- echo 'mysql is up' &&
+        /app/cubit -c /app/prod.yml"
+    environment:
+      - TZ=Asia/Shanghai
+    depends_on:
+        - mysql
+
+volumes:
+  mysql_database:
+    external: true
