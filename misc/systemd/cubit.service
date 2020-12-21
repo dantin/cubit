@@ -1,0 +1,10 @@
+[Unit]
+Description=Cubit XMPP server
+After=syslog.target network.target
+
+[Service]
+User=david
+ExecStart=/home/david/Documents/scripts/run_cubit.sh
+
+[Install]
+WantedBy=multi-user.target
