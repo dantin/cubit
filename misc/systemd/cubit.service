@@ -1,6 +1,6 @@
 [Unit]
 Description=Cubit XMPP server
-After=syslog.target network.target
+After=syslog.target network.target cubit_mysql.service
 
 [Service]
 User=david

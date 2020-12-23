@@ -1,0 +1,16 @@
+[Unit]
+Description=Cubit MySQL service docker wrapper
+Wants=docker.socket
+After=docker.service
+
+[Service]
+LimitNOFILE=1000000
+User=david
+ExecStart=/home/david/Documents/scripts/run_mysql.sh
+ExecStartPre=docker rm -f cubit_mysql
+ExecStop=docker stop cubit_mysql
+Restart=true
+RestartSec=15s
+
+[Install]
+WantedBy=multi-user.target
